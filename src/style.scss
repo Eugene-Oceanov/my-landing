@@ -1,0 +1,60 @@
+@font-face {
+  font-family: "Pixeloid Mono";
+  src: url(./assets/fonts/PixeloidMono.ttf);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+tr,
+td {
+  font-family: "Pixeloid Mono";
+  font-size: 16px;
+  font-weight: normal;
+  line-height: normal;
+  color: #fff;
+  white-space: pre;
+}
+
+.yellow-text {
+  color: yellow;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #000000;
+
+  #output {
+    padding: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  #input {
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+
+    .input_field {
+      flex-grow: 1;
+      caret-color: #fff;
+      caret-shape: block;
+      outline: none;
+      white-space: nowrap;
+    }
+  }
+}
