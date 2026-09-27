@@ -29,6 +29,20 @@ td {
   color: yellow;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+
+  &-track {
+    background: #000;
+    border-radius: 4px;
+  }
+
+  &-thumb {
+    background: #fff;
+    border-radius: 2px;
+  }
+}
+
 #app {
   height: 100vh;
   width: 100vw;
@@ -42,12 +56,29 @@ td {
     padding: 15px;
     flex-grow: 1;
     overflow-y: auto;
+
+    .response-item {
+      margin-bottom: 15px;
+
+      .response-head {
+        margin-bottom: 5px;
+      }
+
+      .response-body {
+        padding-left: 25px;
+
+        .help-table tr td + td {
+          padding-left: 25px;
+        }
+      }
+    }
   }
 
   #input {
     padding: 15px;
     display: flex;
     gap: 10px;
+    background: #141414;
 
     .input_field {
       flex-grow: 1;
