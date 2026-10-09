@@ -9,26 +9,6 @@
   box-sizing: border-box;
 }
 
-h1,
-h2,
-h3,
-h4,
-p,
-a,
-tr,
-td {
-  font-family: "Pixeloid Mono";
-  font-size: 16px;
-  font-weight: normal;
-  line-height: normal;
-  color: #fff;
-  white-space: pre;
-}
-
-.yellow-text {
-  color: yellow;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
 
@@ -52,6 +32,26 @@ td {
   flex-direction: column;
   background: #000000;
 
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  a,
+  tr,
+  td {
+    font-family: "Pixeloid Mono";
+    font-size: 16px;
+    font-weight: normal;
+    line-height: normal;
+    color: #fff;
+    white-space: pre;
+  }
+
+  .yellow-text {
+    color: yellow;
+  }
+
   #output {
     padding: 15px;
     flex-grow: 1;
@@ -67,9 +67,18 @@ td {
       .response-body {
         padding-left: 25px;
 
-        .help-table tr td + td {
-          padding-left: 25px;
+        table tr td + td {
+          padding-left: 30px;
         }
+
+        #snake-canvas {
+          border: 3px dashed #fff;
+        }
+      }
+
+      .player {
+        padding: 10px;
+        border: 3px dashed #fff;
       }
     }
   }
@@ -86,6 +95,32 @@ td {
       caret-shape: block;
       outline: none;
       white-space: nowrap;
+    }
+  }
+}
+
+.light {
+  background: #f1f1f1 !important;
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  a,
+  tr,
+  td {
+    color: #000 !important;
+  }
+
+  .yellow-text {
+    color: #b8860b !important;
+  }
+
+  #input {
+    background: #c3c3c3 !important;
+
+    .input_field {
+      caret-color: #000 !important;
     }
   }
 }
