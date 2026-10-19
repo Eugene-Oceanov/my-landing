@@ -5,9 +5,7 @@ let ctx = null;
 let countNode = null;
 let tile = 25;
 let grid = null;
-let snake = [
-  { x: logicLib.getRandomInt(0, grid), y: logicLib.getRandomInt(0, grid) },
-];
+let snake = [];
 const directions = {
   up: { x: 0, y: -1 },
   right: { x: 1, y: 0 },
@@ -15,19 +13,28 @@ const directions = {
   left: { x: -1, y: 0 },
 };
 let direction = directions.right;
-let apple = getApple();
+let apple;
 let delay = 500;
 let score = 0;
 let isRunning = true;
+let bestResult = localStorage.getItem("snakeBest")
+  ? localStorage.getItem("snakeBest")
+  : 0;
 
 export function gameInit(response) {
   canvas = response.querySelector("#snake-canvas");
+  canvas.focus();
   ctx = canvas.getContext("2d");
-  countNode = response.querySelector(".snake-score");
   grid = canvas.width / tile;
-
+  countNode = response.querySelector(".snake-score");
+  snake.push({
+    x: logicLib.getRandomInt(0, grid),
+    y: logicLib.getRandomInt(0, grid),
+  });
+  apple = getApple();
   draw();
-  setTimeout(gameCycle, delay);
+  setTimeout(() => gameCycle(bestResult), delay);
+  keydownListener();
 }
 
 function gameCycle() {
@@ -42,7 +49,13 @@ function gameCycle() {
   if (snake[0].x == apple.x && snake[0].y == apple.y) {
     apple = getApple();
     score++;
-    countNode.textContent = `Счет: ${score}`;
+    if (score > parseInt(bestResult)) {
+      countNode.textContent = `Счет: ${score}. Лучший результат: ${score}.`;
+      localStorage.setItem("snakeBest", score);
+    } else {
+      countNode.textContent = `Счет: ${score}. Лучший результат: ${parseInt(bestResult)}.`;
+    }
+
     if (delay > 50) delay = delay - 10;
   } else snake.pop();
   draw();
@@ -82,13 +95,19 @@ function gameOver() {
   countNode.classList.remove("snake-score");
 }
 
-window.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowUp" && direction != directions.down)
-    direction = directions.up;
-  if (e.key === "ArrowRight" && direction != directions.left)
-    direction = directions.right;
-  if (e.key === "ArrowDown" && direction != directions.up)
-    direction = directions.down;
-  if (e.key === "ArrowLeft" && direction != directions.right)
-    direction = directions.left;
-});
+function keydownListener() {
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp" && direction != directions.down) {
+      e.preventDefault();
+      direction = directions.up;
+    }
+    if (e.key === "ArrowRight" && direction != directions.left)
+      direction = directions.right;
+    if (e.key === "ArrowDown" && direction != directions.up) {
+      e.preventDefault();
+      direction = directions.down;
+    }
+    if (e.key === "ArrowLeft" && direction != directions.right)
+      direction = directions.left;
+  });
+}

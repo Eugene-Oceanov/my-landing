@@ -79,6 +79,51 @@
       .player {
         padding: 10px;
         border: 3px dashed #fff;
+        width: 35%;
+
+        .song-info {
+          margin-bottom: 5px;
+        }
+
+        .progress-bar-outer {
+          width: 100%;
+          margin-bottom: 5px;
+          padding: 2px;
+          border: 2px dashed #fff;
+          cursor: pointer;
+
+          .progress-bar-inner {
+            height: 3px;
+            width: 0;
+            background: #fff;
+          }
+        }
+
+        .player-time-info {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 5px;
+        }
+
+        .player-bottom-block {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+
+          .player-control-btn {
+            width: 32px;
+            aspect-ratio: 1;
+            cursor: pointer;
+            + .player-control-btn {
+              margin-left: 10px;
+            }
+          }
+          .player-prev-btn {
+            transform: rotate(180deg);
+          }
+        }
       }
     }
   }

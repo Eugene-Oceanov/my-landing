@@ -1,10 +1,11 @@
 import "./style.scss";
-import layoutLib from "./components/response-layouts.js";
+import layoutLib from "./components/layouts-library.js";
 import logicLib from "./components/library.js";
 
 const app = document.querySelector("#app");
 const output = document.querySelector("#output");
 const input = document.querySelector(".input_field");
+const playBtn = document.querySelector(".play");
 const storage = new Array();
 const commands = {
   skills: layoutLib.getSkillsResponse,
@@ -12,6 +13,7 @@ const commands = {
   help: layoutLib.getHelpResponse,
   date: layoutLib.getDateResponse,
   theme: layoutLib.getThemeResponse,
+  sudo: layoutLib.getSudoResponse,
   whoami: layoutLib.getWhoamiResponse,
   clear: layoutLib.getClearResponse,
   snake: layoutLib.getSnakeResponse,
@@ -44,15 +46,16 @@ input.addEventListener("keydown", (e) => {
     }
     output.append(responseItem);
     responseItem.scrollIntoView({ behavior: "auto", block: "end" });
+    input.textContent = "";
+    if (validCommand === "snake") return;
     const storageItem = {
       command: validCommand,
       response: responseItem.innerHTML,
       date: date,
     };
     storage.push(storageItem);
-    localStorage.setItem("commandsHistory", JSON.stringify(storage));
     commandCounter = storage.length;
-    input.textContent = "";
+    localStorage.setItem("commandsHistory", JSON.stringify(storage));
   }
   if (e.key === "ArrowUp") {
     e.preventDefault();
@@ -94,7 +97,7 @@ window.addEventListener("load", () => {
       storage.push(item);
     });
     commandCounter = storage.length - 1;
-    input.textContent = storage[commandCounter].command;
+    input.textContent = "";
   }
   logicLib.cursorToTheEnd();
 });

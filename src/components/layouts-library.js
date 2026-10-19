@@ -1,5 +1,9 @@
 const pathString = "guest-user@my-site.com:~$";
 import { gameInit } from "./snake.js";
+import { playerInit } from "./player.js";
+import playerPlayBtn from "../assets/img/play-btn.png";
+import playerPauseBtn from "../assets/img/pause-btn.png";
+import playerNextBtn from "../assets/img/next-btn.png";
 
 const commandsText = [
   {
@@ -121,7 +125,7 @@ const layoutLib = {
             </tr>
             <tr>
                 <td class="yellow-text">sudo rm -rf /</td>
-                <td>Введите "sudo rm -rf /" для ██████ ███ ██████.</td>
+                <td>Введите "sudo" для ██████ ███ ██████.</td>
             </tr>
             <tr>
                 <td class="yellow-text">whoami</td>
@@ -162,13 +166,13 @@ const layoutLib = {
     <p class="yellow-text">#===========================================#
 #     ______                                #
 #    / ____/_  ______ ____  ____  ___       #
-#   / __/ / / / / __ '/ _ \\/ __ \\/ _ \\      #
+#   / __/ / / / / __ \\/ _ \\/ __ \\/ _ \\      #
 #  / /___/ /_/ / /_/ /  __/ / / /  __/      #
-# /_____/\\__,_/\\__, /\\___/_/ /_/\\___/       #
+# /_____/\\____/\\__, /\\___/_/ /_/\\___/       #
 #   / __ \\____/____/____ _____  ____ _   __ #
-#  / / / / ___/ _ \\/ __ '/ __ \\/ __ \\ | / / #
+#  / / / / ___/ _ \\/ __ \\/ __ \\/ __ \\ | / / #
 # / /_/ / /__/  __/ /_/ / / / / /_/ / |/ /  #
-# \\____/\\___/\\___/\\__,_/_/ /_/\\____/|___/   #
+# \\____/\\___/\\___/\\____/_/ /_/\\____/|___/   #
 #                                           #
 #===========================================#</p>
     <p># Фронтенд разработчик</p>
@@ -196,6 +200,13 @@ const layoutLib = {
     const responseItem = getResponseItem(command, date);
   },
 
+  getSudoResponse: function (date) {
+    const responseItem = getResponseItem("sudo", date);
+    responseItem.querySelector(".response-body").innerHTML =
+      `<p>Хорошая попытка))) Об этом будет доложено.</p>`;
+    return responseItem;
+  },
+
   getWhoamiResponse: function (date) {
     const responseItem = getResponseItem("whoami", date);
     responseItem.querySelector(".response-body").innerHTML =
@@ -210,22 +221,48 @@ const layoutLib = {
   },
 
   getSnakeResponse: function (date) {
-    const responseItem = getResponseItem("whoami", date);
-    responseItem.querySelector(".response-body").innerHTML = `
-        <p class="snake-score">Счет: 0</p>
+    const responseItem = getResponseItem("snake", date);
+    let bestResult = localStorage.getItem("snakeBest")
+      ? localStorage.getItem("snakeBest")
+      : 0;
+    if (document.querySelector("#snake-canvas")) {
+      responseItem.querySelector(".response-body").innerHTML =
+        "<p>Вы уже играете в змейку</p>";
+    } else {
+      responseItem.querySelector(".response-body").innerHTML = `
+        <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
         <canvas id="snake-canvas" width="500" height="500"></canvas>
         `;
-    gameInit(responseItem);
+      gameInit(responseItem);
+    }
     return responseItem;
   },
 
   getMusicResponse: function (date) {
     const responseItem = getResponseItem("music", date);
     responseItem.querySelector(".response-body").innerHTML = `
+    <audio id="audio" preload="metadata"></audio>
     <div class="player">
-      <img class="play" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAVklEQVR4nO3WQQoAIAgAQf//6e0edCtXyQXvA5EVMU3F4zD/AfbSMFQFpGHoAHiKoRvgOobOgCsYOgOwjwADgH0NMQDYqxgDgP0ckw3A/pJhAaYpXrcApPFxj702i18AAAAASUVORK5CYII=" alt="play">
+      <p class="song-info"><span class="song-author">The Police</span> - <span class="song-title yellow-text">Every Breath You Take</span></p>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner"></div>
+      </div>
+      <div class="player-time-info">
+        <p class="song-timer">0:00</p>
+        <p class="song-duration">0:00</p>
+      </div>
+      <div class="player-bottom-block">
+        <div class="player-controls">
+          <img src="${playerNextBtn}" alt="prev" class="player-control-btn player-prev-btn">
+          <img src="${playerPlayBtn}" alt="play" class="player-control-btn player-play-btn">
+          <img src="${playerPauseBtn}" alt="play" class="player-control-btn player-pause-btn" style="display: none">
+          <img src="${playerNextBtn}" alt="prev" class="player-control-btn player-next-btn">
+        </div>
+        <canvas id="player-canvas"></canvas>
+      </div>
     </div>
     `;
+    playerInit(responseItem);
     return responseItem;
   },
 
