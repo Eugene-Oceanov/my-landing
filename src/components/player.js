@@ -66,7 +66,9 @@ export async function playerInit(response) {
   prevBtn.onclick = () => prevMusic();
   nextBtn.onclick = () => nextMusic();
   canvas.height = 32;
-  canvas.width = 280;
+  setTimeout(() => {
+    canvas.width = bottomBlock.offsetWidth - controlsBlock.offsetWidth - 20;
+  }, 0);
   equalizerInit();
 }
 
@@ -81,6 +83,7 @@ async function playMusic() {
   audio.ontimeupdate = (e) => {
     getProgress(e);
     timer.textContent = songTimeToString(audio.currentTime);
+    if (audio.currentTime === audio.duration) nextMusic();
   };
   draw();
 }
@@ -140,7 +143,6 @@ function equalizerInit() {
   source = audioCtx.createMediaElementSource(audio);
   source.connect(analyser);
   analyser.connect(audioCtx.destination);
-  console.log(dataArray);
 }
 
 function draw() {
@@ -148,7 +150,7 @@ function draw() {
   analyser.getByteFrequencyData(dataArray);
   ctx.fillStyle = "rgb(0, 0, 0)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const barWidth = canvas.width / bufferLength;
+  const barWidth = canvas.width / bufferLength - 1;
   let barHeight;
   let x = 0;
   for (let i = 0; i < bufferLength; i++) {

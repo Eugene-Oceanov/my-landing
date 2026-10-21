@@ -30,8 +30,17 @@ const commandsText = [
 function getResponseItem(command, date) {
   const responseItem = document.createElement("DIV");
   responseItem.classList.add("response-item");
-  responseItem.innerHTML = `<p class="response-head">${date} ${pathString} <span class="yellow-text">${command}</span></p>
-                              <div class="response-body"></div>`;
+  const responseHead = document.createElement("P");
+  responseHead.classList.add("response-head");
+  responseHead.textContent = `${date} ${pathString} `;
+  const commandText = document.createElement("SPAN");
+  commandText.classList.add("yellow-text");
+  commandText.textContent = command;
+  responseHead.append(commandText);
+  const responseBody = document.createElement("DIV");
+  responseBody.classList.add("response-body");
+  responseItem.append(responseHead);
+  responseItem.append(responseBody);
   return responseItem;
 }
 
@@ -227,19 +236,23 @@ const layoutLib = {
       : 0;
     if (document.querySelector("#snake-canvas")) {
       responseItem.querySelector(".response-body").innerHTML =
-        "<p>Вы уже играете в змейку</p>";
-    } else {
-      responseItem.querySelector(".response-body").innerHTML = `
-        <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
-        <canvas id="snake-canvas" width="500" height="500"></canvas>
-        `;
-      gameInit(responseItem);
+        "<p>Программа 'snake' уже запущена.</p>";
+      return responseItem;
     }
+    responseItem.querySelector(".response-body").innerHTML = `
+      <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
+      <canvas id="snake-canvas" width="500" height="500"></canvas>`;
+    gameInit(responseItem);
     return responseItem;
   },
 
   getMusicResponse: function (date) {
     const responseItem = getResponseItem("music", date);
+    if (document.querySelector(".player")) {
+      responseItem.querySelector(".response-body").innerHTML =
+        "<p>Программа 'music' уже запущена.</p>";
+      return responseItem;
+    }
     responseItem.querySelector(".response-body").innerHTML = `
     <audio id="audio" preload="metadata"></audio>
     <div class="player">

@@ -14,9 +14,9 @@ const directions = {
 };
 let direction = directions.right;
 let apple;
-let delay = 500;
-let score = 0;
-let isRunning = true;
+let delay;
+let score;
+let isRunning;
 let bestResult = localStorage.getItem("snakeBest")
   ? localStorage.getItem("snakeBest")
   : 0;
@@ -27,14 +27,18 @@ export function gameInit(response) {
   ctx = canvas.getContext("2d");
   grid = canvas.width / tile;
   countNode = response.querySelector(".snake-score");
+  snake.length = 0;
   snake.push({
     x: logicLib.getRandomInt(0, grid),
     y: logicLib.getRandomInt(0, grid),
   });
   apple = getApple();
+  score = 0;
+  isRunning = true;
+  delay = 500;
   draw();
   setTimeout(() => gameCycle(bestResult), delay);
-  keydownListener();
+  window.addEventListener("keydown", addKeydownListener);
 }
 
 function gameCycle() {
@@ -93,21 +97,23 @@ function gameOver() {
   canvas.remove();
   countNode.textContent = "Вы можете лучше.";
   countNode.classList.remove("snake-score");
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  delay = null;
+  canvas.removeEventListener("keydown", addKeydownListener);
 }
 
-function keydownListener() {
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp" && direction != directions.down) {
-      e.preventDefault();
-      direction = directions.up;
-    }
-    if (e.key === "ArrowRight" && direction != directions.left)
-      direction = directions.right;
-    if (e.key === "ArrowDown" && direction != directions.up) {
-      e.preventDefault();
-      direction = directions.down;
-    }
-    if (e.key === "ArrowLeft" && direction != directions.right)
-      direction = directions.left;
-  });
+function addKeydownListener(e) {
+  if (e.key === "ArrowUp" && direction != directions.down) {
+    e.preventDefault();
+    direction = directions.up;
+  }
+  if (e.key === "ArrowRight" && direction != directions.left)
+    direction = directions.right;
+  if (e.key === "ArrowDown" && direction != directions.up) {
+    e.preventDefault();
+    direction = directions.down;
+  }
+  if (e.key === "ArrowLeft" && direction != directions.right)
+    direction = directions.left;
 }
