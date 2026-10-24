@@ -1,5 +1,6 @@
 const pathString = "guest-user@my-site.com:~$";
-import { gameInit } from "./snake.js";
+import { snakeGameInit } from "./snake.js";
+import { pongInit } from "./pong.js";
 import { playerInit } from "./player.js";
 import playerPlayBtn from "../assets/img/play-btn.png";
 import playerPauseBtn from "../assets/img/pause-btn.png";
@@ -231,18 +232,31 @@ const layoutLib = {
 
   getSnakeResponse: function (date) {
     const responseItem = getResponseItem("snake", date);
-    let bestResult = localStorage.getItem("snakeBest")
-      ? localStorage.getItem("snakeBest")
-      : 0;
-    if (document.querySelector("#snake-canvas")) {
+    if (document.getElementById("snake-canvas")) {
       responseItem.querySelector(".response-body").innerHTML =
         "<p>Программа 'snake' уже запущена.</p>";
       return responseItem;
     }
+    let bestResult = localStorage.getItem("snakeBest")
+      ? localStorage.getItem("snakeBest")
+      : 0;
     responseItem.querySelector(".response-body").innerHTML = `
       <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
-      <canvas id="snake-canvas" width="500" height="500"></canvas>`;
-    gameInit(responseItem);
+      <canvas id="snake-canvas" width="500" height="500" tabindex="0"></canvas>`;
+    snakeGameInit(responseItem);
+    return responseItem;
+  },
+
+  getPongResponse: function (date) {
+    const responseItem = getResponseItem("pong", date);
+    if (document.getElementById("pong-canvas")) {
+      responseItem.querySelector(".response-body").innerHTML =
+        "<p>Программа 'pong' уже запущена.</p>";
+      return responseItem;
+    }
+    responseItem.querySelector(".response-body").innerHTML = `
+    <canvas id="pong-canvas" width="500" height="300" tabindex="0"></canvas>`;
+    pongInit(responseItem);
     return responseItem;
   },
 

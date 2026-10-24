@@ -21,9 +21,9 @@ let bestResult = localStorage.getItem("snakeBest")
   ? localStorage.getItem("snakeBest")
   : 0;
 
-export function gameInit(response) {
+export function snakeGameInit(response) {
   canvas = response.querySelector("#snake-canvas");
-  canvas.focus();
+
   ctx = canvas.getContext("2d");
   grid = canvas.width / tile;
   countNode = response.querySelector(".snake-score");
@@ -38,7 +38,8 @@ export function gameInit(response) {
   delay = 500;
   draw();
   setTimeout(() => gameCycle(bestResult), delay);
-  window.addEventListener("keydown", addKeydownListener);
+  setTimeout(() => canvas.focus(), 0);
+  canvas.addEventListener("keydown", addKeydownListener);
 }
 
 function gameCycle() {
@@ -67,9 +68,18 @@ function gameCycle() {
 }
 
 function draw() {
-  ctx.fillStyle = "#000";
+  let backgroundColor;
+  let snakeColor;
+  if (document.getElementById("app").classList.contains("light")) {
+    backgroundColor = "#f1f1f1";
+    snakeColor = "#000000";
+  } else {
+    backgroundColor = "#000000";
+    snakeColor = "#ffffff";
+  }
+  ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = snakeColor;
   ctx.fillRect(tile * apple.x, tile * apple.y, tile, tile);
   if (snake.length > 0) {
     snake.forEach((item) => {

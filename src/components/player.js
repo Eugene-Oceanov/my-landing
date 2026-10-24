@@ -85,7 +85,7 @@ async function playMusic() {
     timer.textContent = songTimeToString(audio.currentTime);
     if (audio.currentTime === audio.duration) nextMusic();
   };
-  draw();
+  drawEqualizer();
 }
 
 function pauseMusic() {
@@ -145,17 +145,26 @@ function equalizerInit() {
   analyser.connect(audioCtx.destination);
 }
 
-function draw() {
-  requestAnimationFrame(draw);
+function drawEqualizer() {
+  requestAnimationFrame(drawEqualizer);
+  let backgroundColor;
+  let barColor;
+  if (document.getElementById("app").classList.contains("light")) {
+    backgroundColor = q;
+    barColor = "#000000";
+  } else {
+    backgroundColor = "#000000";
+    barColor = "#ffffff";
+  }
   analyser.getByteFrequencyData(dataArray);
-  ctx.fillStyle = "rgb(0, 0, 0)";
+  ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const barWidth = canvas.width / bufferLength - 1;
   let barHeight;
   let x = 0;
   for (let i = 0; i < bufferLength; i++) {
     barHeight = dataArray[i];
-    ctx.fillStyle = `#fff`;
+    ctx.fillStyle = barColor;
     ctx.fillRect(x, canvas.height - barHeight / 9, barWidth, barHeight / 9);
     x += barWidth + 1;
   }

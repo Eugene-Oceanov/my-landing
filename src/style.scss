@@ -73,6 +73,11 @@
 
         #snake-canvas {
           border: 3px dashed #fff;
+          outline: none;
+        }
+
+        #pong-canvas {
+          border: 3px dashed #fff;
         }
       }
 
@@ -159,6 +164,18 @@
 
   .yellow-text {
     color: #b8860b !important;
+  }
+
+  .player {
+    border: 3px dashed #000 !important;
+
+    .progress-bar-outer {
+      border: 2px dashed #000 !important;
+
+      .progress-bar-inner {
+        background: #000 !important;
+      }
+    }
   }
 
   #input {

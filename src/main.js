@@ -17,13 +17,14 @@ const commands = {
   whoami: layoutLib.getWhoamiResponse,
   clear: layoutLib.getClearResponse,
   snake: layoutLib.getSnakeResponse,
+  pong: layoutLib.getPongResponse,
   music: layoutLib.getMusicResponse,
 };
 let commandCounter = null;
 let lightThemeFlag = false;
 
 input.addEventListener("keydown", (e) => {
-  if (e.key == "Enter") {
+  if (e.key === "Enter") {
     e.preventDefault();
     const validCommand = input.textContent.toLowerCase();
     const date = logicLib.getDate();
