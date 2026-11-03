@@ -48,7 +48,7 @@ input.addEventListener("keydown", (e) => {
     output.append(responseItem);
     responseItem.scrollIntoView({ behavior: "auto", block: "end" });
     input.textContent = "";
-    if (validCommand === "snake") return;
+    if (validCommand === "snake" || validCommand === "pong") return;
     const storageItem = {
       command: validCommand,
       response: responseItem.innerHTML,

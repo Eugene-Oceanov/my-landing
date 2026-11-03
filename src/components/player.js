@@ -67,7 +67,7 @@ export async function playerInit(response) {
   nextBtn.onclick = () => nextMusic();
   canvas.height = 32;
   setTimeout(() => {
-    canvas.width = bottomBlock.offsetWidth - controlsBlock.offsetWidth - 20;
+    canvas.width = bottomBlock.offsetWidth - controlsBlock.offsetWidth - 30;
   }, 0);
   equalizerInit();
 }

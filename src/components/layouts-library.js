@@ -1,7 +1,8 @@
 const pathString = "guest-user@my-site.com:~$";
-import { snakeGameInit } from "./snake.js";
+import { snakeInit } from "./snake.js";
 import { pongInit } from "./pong.js";
 import { playerInit } from "./player.js";
+import restartBtn from "../assets/img/restart-btn.png";
 import playerPlayBtn from "../assets/img/play-btn.png";
 import playerPauseBtn from "../assets/img/pause-btn.png";
 import playerNextBtn from "../assets/img/next-btn.png";
@@ -193,7 +194,7 @@ const layoutLib = {
   },
 
   getDateResponse: function (date) {
-    const responseItem = getResponseItem("whoami", date);
+    const responseItem = getResponseItem("date", date);
     responseItem.querySelector(".response-body").innerHTML = `<p>${date}</p>`;
     return responseItem;
   },
@@ -243,7 +244,7 @@ const layoutLib = {
     responseItem.querySelector(".response-body").innerHTML = `
       <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
       <canvas id="snake-canvas" width="500" height="500" tabindex="0"></canvas>`;
-    snakeGameInit(responseItem);
+    snakeInit(responseItem);
     return responseItem;
   },
 
@@ -255,7 +256,12 @@ const layoutLib = {
       return responseItem;
     }
     responseItem.querySelector(".response-body").innerHTML = `
-    <canvas id="pong-canvas" width="500" height="300" tabindex="0"></canvas>`;
+    <canvas id="pong-canvas" width="500" height="300" tabindex="0"></canvas>
+    <div class="pong-info">
+      <p class="pong-counter pong-ai-counter">0</p>
+      <img src="${restartBtn}" alt="restart" class="restart-btn pong-restart-btn">
+      <p class="pong-counter pong-player-counter">0</p>
+    </div>`;
     pongInit(responseItem);
     return responseItem;
   },

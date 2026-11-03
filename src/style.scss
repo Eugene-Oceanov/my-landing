@@ -65,19 +65,37 @@
       }
 
       .response-body {
-        padding-left: 25px;
+        position: relative;
+        margin-left: 25px;
 
         table tr td + td {
           padding-left: 30px;
         }
 
-        #snake-canvas {
+        canvas {
           border: 3px dashed #fff;
           outline: none;
         }
 
-        #pong-canvas {
-          border: 3px dashed #fff;
+        .pong-info {
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+
+          .pong-counter {
+            font-size: 60px;
+          }
+
+          .pong-restart-btn {
+            position: absolute;
+            display: none;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+          }
         }
       }
 

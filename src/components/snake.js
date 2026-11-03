@@ -21,9 +21,8 @@ let bestResult = localStorage.getItem("snakeBest")
   ? localStorage.getItem("snakeBest")
   : 0;
 
-export function snakeGameInit(response) {
+export function snakeInit(response) {
   canvas = response.querySelector("#snake-canvas");
-
   ctx = canvas.getContext("2d");
   grid = canvas.width / tile;
   countNode = response.querySelector(".snake-score");
@@ -37,12 +36,12 @@ export function snakeGameInit(response) {
   isRunning = true;
   delay = 500;
   draw();
-  setTimeout(() => gameCycle(bestResult), delay);
+  setTimeout(() => frame(bestResult), delay);
   setTimeout(() => canvas.focus(), 0);
   canvas.addEventListener("keydown", addKeydownListener);
 }
 
-function gameCycle() {
+function frame() {
   if (!isRunning) return;
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   if (head.x > grid - 1) head.x = 0;
@@ -64,7 +63,7 @@ function gameCycle() {
     if (delay > 50) delay = delay - 10;
   } else snake.pop();
   draw();
-  setTimeout(gameCycle, delay);
+  setTimeout(frame, delay);
 }
 
 function draw() {
