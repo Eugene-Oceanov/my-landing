@@ -21,6 +21,7 @@ let source;
 let isPause = true;
 let songIndex = 0;
 let currentSong;
+let animationID;
 const musicBase = [
   {
     id: 0,
@@ -50,16 +51,17 @@ export async function playerInit(response) {
   pauseBtn = response.querySelector(".player-pause-btn");
   prevBtn = response.querySelector(".player-prev-btn");
   nextBtn = response.querySelector(".player-next-btn");
-  pauseBtn = response.querySelector(".player-pause-btn");
   canvas = response.querySelector("#player-canvas");
   ctx = canvas.getContext("2d");
   currentSong = musicBase[0];
+  audio.crossOrigin = "anonymous";
   audio.src = currentSong.file;
   songInfo.innerHTML = getSongInfo();
   audio.load();
   audio.onloadeddata = () => {
     fullDuration.textContent = songTimeToString(audio.duration);
   };
+  audio.onended = () => nextMusic();
   progressBarOuter.onclick = (e) => setProgress(e);
   playBtn.onclick = () => playMusic();
   pauseBtn.onclick = () => pauseMusic();
@@ -73,7 +75,7 @@ export async function playerInit(response) {
 }
 
 async function playMusic() {
-  if (audioCtx.state === "suspended") {
+  if (audioCtx && audioCtx.state === "suspended") {
     await audioCtx.resume();
   }
   audio.play();
@@ -83,9 +85,8 @@ async function playMusic() {
   audio.ontimeupdate = (e) => {
     getProgress(e);
     timer.textContent = songTimeToString(audio.currentTime);
-    if (audio.currentTime === audio.duration) nextMusic();
   };
-  drawEqualizer();
+  if (!animationID) drawEqualizer();
 }
 
 function pauseMusic() {
@@ -93,22 +94,31 @@ function pauseMusic() {
   isPause = true;
   playBtn.style.display = "inline-block";
   pauseBtn.style.display = "none";
+  if (animationID) {
+    cancelAnimationFrame(animationID);
+    animationID = null;
+  }
+}
+
+function changeTrack() {
+  audio.src = currentSong.file;
+  songInfo.innerHTML = getSongInfo();
+  audio.load();
+  if (!isPause) {
+    audio.play();
+  }
 }
 
 function prevMusic() {
   songIndex === 0 ? (songIndex = musicBase.length - 1) : songIndex--;
   currentSong = musicBase[songIndex];
-  audio.src = currentSong.file;
-  songInfo.innerHTML = getSongInfo();
-  !isPause ? playMusic() : null;
+  changeTrack();
 }
 
 function nextMusic() {
   songIndex === musicBase.length - 1 ? (songIndex = 0) : songIndex++;
   currentSong = musicBase[songIndex];
-  audio.src = currentSong.file;
-  songInfo.innerHTML = getSongInfo();
-  !isPause ? playMusic() : null;
+  changeTrack();
 }
 
 function getSongInfo() {
@@ -123,7 +133,7 @@ function getProgress() {
 function setProgress(e) {
   const offsetX = e.offsetX;
   const duration = audio.duration;
-  audio.currentTime = (offsetX / e.target.clientWidth) * duration;
+  audio.currentTime = (offsetX / e.currentTarget.clientWidth) * duration;
   getProgress();
 }
 
@@ -146,11 +156,11 @@ function equalizerInit() {
 }
 
 function drawEqualizer() {
-  requestAnimationFrame(drawEqualizer);
+  animationID = requestAnimationFrame(drawEqualizer);
   let backgroundColor;
   let barColor;
   if (document.getElementById("app").classList.contains("light")) {
-    backgroundColor = q;
+    backgroundColor = "#f1f1f1";
     barColor = "#000000";
   } else {
     backgroundColor = "#000000";
@@ -163,7 +173,7 @@ function drawEqualizer() {
   let barHeight;
   let x = 0;
   for (let i = 0; i < bufferLength; i++) {
-    barHeight = dataArray[i];
+    barHeight = dataArray[i] - 1;
     ctx.fillStyle = barColor;
     ctx.fillRect(x, canvas.height - barHeight / 9, barWidth, barHeight / 9);
     x += barWidth + 1;

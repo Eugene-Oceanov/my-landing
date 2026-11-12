@@ -5,7 +5,6 @@ import logicLib from "./components/library.js";
 const app = document.querySelector("#app");
 const output = document.querySelector("#output");
 const input = document.querySelector(".input_field");
-const playBtn = document.querySelector(".play");
 const storage = new Array();
 const commands = {
   skills: layoutLib.getSkillsResponse,
@@ -20,18 +19,19 @@ const commands = {
   pong: layoutLib.getPongResponse,
   music: layoutLib.getMusicResponse,
 };
-let commandCounter = null;
+let commandCounter = 0;
 let lightThemeFlag = false;
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    const validCommand = input.textContent.toLowerCase();
+    const validCommand = input.textContent.trim().toLowerCase();
     const date = logicLib.getDate();
     let responseItem;
     if (validCommand === "clear") {
       commands.clear(output, storage);
       input.textContent = "";
+      commandCounter = 0;
       return;
     } else if (validCommand === "theme") {
       !lightThemeFlag
@@ -86,12 +86,10 @@ window.addEventListener("load", () => {
     const LS = JSON.parse(localStorage.getItem("commandsHistory"));
     LS.forEach((item) => {
       let responseItem;
-      if (!commands[item.command]) {
-        responseItem = layoutLib.getInvalidResponse(item.command, item.date);
-      } else if (commands[item.command] === "theme") {
-        responseItem = commands[item.command](lightThemeFlag, item.date);
+      if (item.command === "music") {
+        responseItem = commands.music(item.date);
       } else {
-        responseItem = commands[item.command](item.date);
+        responseItem = layoutLib.getResponseFromHistory(item.response);
       }
       output.append(responseItem);
       responseItem.scrollIntoView({ behavior: "auto", block: "end" });

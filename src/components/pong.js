@@ -1,26 +1,26 @@
-let pongInfo = null;
-let AIscoreNode = null;
-let playerScoreNode = null;
-let restartBtn = null;
-let canvas = null;
-let ctx = null;
-let canvasWidth = null;
-let canvasHeight = null;
-let playerPos = null;
-let AIpos = null;
-let ballX = null;
-let ballY = null;
+let pongInfo;
+let AIscoreNode;
+let playerScoreNode;
+let restartBtn;
+let canvas;
+let ctx;
+let canvasWidth;
+let canvasHeight;
+let playerPos;
+let AIpos;
+let ballX;
+let ballY;
 const paddleW = 10;
 const paddleH = 50;
 const ballR = 5;
-let dirX = 2;
-let dirY = 2;
+let dirX = 120;
+let dirY = 120;
 let maxBounceAngle = 75;
 let isGameOver = false;
 let animationID;
 let playerScore = 0;
 let AIscore = 0;
-let lastTime = 0;
+let lastTime;
 
 export function pongInit(response) {
   pongInfo = response.querySelector(".pong-info");
@@ -50,18 +50,31 @@ function startPong() {
   AIpos = canvasHeight / 2 - paddleH / 2;
   ballX = canvasWidth / 2 - ballR;
   ballY = canvasHeight / 2 - ballR;
+  dirX = 120;
+  dirY = 120;
   restartBtn.style.display = "none";
-
-  requestAnimationFrame(frame);
-  window.addEventListener("keydown", addKeydownListener);
+  lastTime = 0;
+  animationID = requestAnimationFrame(frame);
+  canvas.focus();
+  canvas.addEventListener("keydown", addKeydownListener);
 }
 
 function frame(timestamp) {
+  if (!document.querySelector("#pong-canvas")) {
+    isGameOver = true;
+    canvas.removeEventListener("keydown", addKeydownListener);
+    cancelAnimationFrame(animationID);
+  }
   if (isGameOver) return;
+  if (!lastTime) {
+    lastTime = timestamp;
+    animationID = requestAnimationFrame(frame);
+    return;
+  }
   const deltaTime = (timestamp - lastTime) / 1000;
   lastTime = timestamp;
-  ballMove();
-  moveAI();
+  ballMove(deltaTime);
+  moveAI(deltaTime);
   checkCollision();
   draw();
   animationID = requestAnimationFrame(frame);
@@ -79,20 +92,22 @@ function draw() {
   ctx.closePath();
 }
 
-function ballMove() {
-  ballX += dirX;
-  ballY += dirY;
+function ballMove(deltaTime) {
+  if (!Number.isFinite(deltaTime)) return;
+  ballX += dirX * deltaTime;
+  ballY += dirY * deltaTime;
 }
 
-function moveAI() {
+function moveAI(deltaTime) {
+  if (!Number.isFinite(deltaTime)) return;
   if (dirX >= 0) return;
   if (ballY - 5 <= AIpos) {
     if (AIpos <= 0) return;
-    AIpos -= 5;
+    AIpos -= 125 * deltaTime;
   }
   if (ballY + 5 >= AIpos + paddleH) {
     if (AIpos >= canvasHeight - paddleH) return;
-    AIpos += 5;
+    AIpos += 125 * deltaTime;
   }
 }
 
@@ -141,13 +156,13 @@ function gameOver() {
     playerScore += 1;
     playerScoreNode.textContent = playerScore;
     restartBtn.style.display = "block";
-    window.removeEventListener("keydown", addKeydownListener);
+    canvas.removeEventListener("keydown", addKeydownListener);
   } else if (ballX >= canvasWidth) {
     isGameOver = true;
     AIscore += 1;
     AIscoreNode.textContent = AIscore;
     restartBtn.style.display = "block";
-    window.removeEventListener("keydown", addKeydownListener);
+    canvas.removeEventListener("keydown", addKeydownListener);
   }
 }
 

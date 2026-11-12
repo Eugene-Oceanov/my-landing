@@ -47,6 +47,13 @@ function getResponseItem(command, date) {
 }
 
 const layoutLib = {
+  getResponseFromHistory: function (HTML) {
+    const responseItem = document.createElement("DIV");
+    responseItem.classList.add("response-item");
+    responseItem.innerHTML = HTML;
+    return responseItem;
+  },
+
   getSkillsResponse: function (date) {
     const responseItem = getResponseItem("skills", date);
     responseItem.querySelector(".response-body").innerHTML = `

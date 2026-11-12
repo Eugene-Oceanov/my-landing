@@ -1,10 +1,10 @@
 import logicLib from "./library.js";
 
-let canvas = null;
-let ctx = null;
-let countNode = null;
+let canvas;
+let ctx;
+let countNode;
 let tile = 25;
-let grid = null;
+let grid;
 let snake = [];
 const directions = {
   up: { x: 0, y: -1 },
@@ -28,20 +28,23 @@ export function snakeInit(response) {
   countNode = response.querySelector(".snake-score");
   snake.length = 0;
   snake.push({
-    x: logicLib.getRandomInt(0, grid),
-    y: logicLib.getRandomInt(0, grid),
+    x: logicLib.getRandomInt(0, grid - 1),
+    y: logicLib.getRandomInt(0, grid - 1),
   });
   apple = getApple();
   score = 0;
   isRunning = true;
   delay = 500;
   draw();
-  setTimeout(() => frame(bestResult), delay);
+  setTimeout(() => frame(), delay);
   setTimeout(() => canvas.focus(), 0);
   canvas.addEventListener("keydown", addKeydownListener);
 }
 
 function frame() {
+  if (!document.querySelector("#snake-canvas")) {
+    gameOver();
+  }
   if (!isRunning) return;
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   if (head.x > grid - 1) head.x = 0;
@@ -55,6 +58,7 @@ function frame() {
     score++;
     if (score > parseInt(bestResult)) {
       countNode.textContent = `Счет: ${score}. Лучший результат: ${score}.`;
+      bestResult = score;
       localStorage.setItem("snakeBest", score);
     } else {
       countNode.textContent = `Счет: ${score}. Лучший результат: ${parseInt(bestResult)}.`;
@@ -63,7 +67,7 @@ function frame() {
     if (delay > 50) delay = delay - 10;
   } else snake.pop();
   draw();
-  setTimeout(frame, delay);
+  if (isRunning) setTimeout(frame, delay);
 }
 
 function draw() {
@@ -101,15 +105,19 @@ function checkCollision() {
   return false;
 }
 
-function gameOver() {
+function stopGame() {
   isRunning = false;
+  delay = null;
+  canvas.removeEventListener("keydown", addKeydownListener);
+}
+
+function gameOver() {
+  stopGame();
   canvas.remove();
   countNode.textContent = "Вы можете лучше.";
   countNode.classList.remove("snake-score");
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  delay = null;
-  canvas.removeEventListener("keydown", addKeydownListener);
 }
 
 function addKeydownListener(e) {
