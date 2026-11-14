@@ -13,6 +13,7 @@ const directions = {
   left: { x: -1, y: 0 },
 };
 let direction = directions.right;
+let directionQueue = [];
 let apple;
 let delay;
 let score;
@@ -31,6 +32,7 @@ export function snakeInit(response) {
     x: logicLib.getRandomInt(0, grid - 1),
     y: logicLib.getRandomInt(0, grid - 1),
   });
+  direction = directions.right;
   apple = getApple();
   score = 0;
   isRunning = true;
@@ -42,19 +44,28 @@ export function snakeInit(response) {
 }
 
 function frame() {
-  if (!document.querySelector("#snake-canvas")) {
-    gameOver();
-  }
   if (!isRunning) return;
+  if (directionQueue.length) {
+    direction = directionQueue.shift();
+  }
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   if (head.x > grid - 1) head.x = 0;
   if (head.x < 0) head.x = grid - 1;
   if (head.y > grid - 1) head.y = 0;
   if (head.y < 0) head.y = grid - 1;
   snake.unshift(head);
-  if (checkCollision()) gameOver();
+  if (checkCollision()) {
+    gameOver();
+    return;
+  }
   if (snake[0].x == apple.x && snake[0].y == apple.y) {
-    apple = getApple();
+    let preApple;
+    do {
+      preApple = getApple();
+    } while (
+      snake.some((item) => item.x === preApple.x && item.y === preApple.y)
+    );
+    apple = preApple;
     score++;
     if (score > parseInt(bestResult)) {
       countNode.textContent = `Счет: ${score}. Лучший результат: ${score}.`;
@@ -121,16 +132,33 @@ function gameOver() {
 }
 
 function addKeydownListener(e) {
-  if (e.key === "ArrowUp" && direction != directions.down) {
+  let newDir = null;
+  if (e.key === "ArrowUp") {
     e.preventDefault();
-    direction = directions.up;
+    newDir = directions.up;
   }
-  if (e.key === "ArrowRight" && direction != directions.left)
-    direction = directions.right;
-  if (e.key === "ArrowDown" && direction != directions.up) {
+  if (e.key === "ArrowRight") {
+    newDir = directions.right;
+  }
+  if (e.key === "ArrowDown") {
     e.preventDefault();
-    direction = directions.down;
+    newDir = directions.down;
   }
-  if (e.key === "ArrowLeft" && direction != directions.right)
-    direction = directions.left;
+  if (e.key === "ArrowLeft") {
+    newDir = directions.left;
+  }
+  if (!newDir) return;
+  const last = directionQueue.length
+    ? directionQueue[directionQueue.length - 1]
+    : direction;
+
+  if (last.x + newDir.x === 0 && last.y + newDir.y === 0) return;
+  if (last.x === newDir.x && last.y === newDir.y) return;
+  directionQueue.push(newDir);
+}
+
+export function stopSnake() {
+  if (document.querySelector("#snake-canvas")) {
+    stopGame();
+  }
 }

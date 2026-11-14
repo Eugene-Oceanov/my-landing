@@ -7,28 +7,6 @@ import playerPlayBtn from "../assets/img/play-btn.png";
 import playerPauseBtn from "../assets/img/pause-btn.png";
 import playerNextBtn from "../assets/img/next-btn.png";
 
-const commandsText = [
-  {
-    "Информационные команды": [
-      { "about me": 'Введите "about me" что бы получить информацию обо мне.' },
-      { skills: 'Введите "skills" что бы получить информацию о моих навыках.' },
-      { resume: 'Введите "resume" что бы скачать мое резюме.' },
-      {
-        contacts:
-          'Введите "contacts" что бы увидеть узнать о способах связи со мной.',
-      },
-      { banner: 'Введите "banner" что бы увидеть старторвое сообщение.' },
-    ],
-  },
-  {
-    "Системные команды": [
-      { help: 'Введите "help" что бы увидеть доступные команды.' },
-      { clear: 'Введите "clear" для очистки экрана.' },
-      { date: 'Введите "date" для получения текущих даты и времени.' },
-    ],
-  },
-];
-
 function getResponseItem(command, date) {
   const responseItem = document.createElement("DIV");
   responseItem.classList.add("response-item");
@@ -51,6 +29,19 @@ const layoutLib = {
     const responseItem = document.createElement("DIV");
     responseItem.classList.add("response-item");
     responseItem.innerHTML = HTML;
+    return responseItem;
+  },
+
+  getAboutmeResponse: function (date) {
+    const responseItem = getResponseItem("aboutme", date);
+    responseItem.querySelector(".response-body").innerHTML = `
+    <h1>Привет!</h1>
+    <p>Я Frontend-разработчик на старте пути.</p>
+    <p>Опыта в индустрии — ноль. Интереса и упорства — с избытком. JavaScript — моя главная страсть: от синтаксиса до того момента, когда код наконец оживает в браузере.</p>
+    </br>
+    <p>Не боюсь не знать — боюсь не разобраться. Люблю пробовать, ошибаться и переписывать заново, пока не станет хорошо.</p>
+    </br>
+    <p>Сейчас ищу первую команду, где смогу расти и приносить пользу.</p>`;
     return responseItem;
   },
 
@@ -134,15 +125,7 @@ const layoutLib = {
                 <td>Введите "theme" для смены темы приложения на светлую/темную.</td>
             </tr>
             <tr>
-                <td class="yellow-text">list</td>
-                <td>Введите "list" для доступа к текущей директории.</td>
-            </tr>
-            <tr>
-                <td class="yellow-text">cd</td>
-                <td>Введите "cd" для смены текущей директории.</td>
-            </tr>
-            <tr>
-                <td class="yellow-text">sudo rm -rf /</td>
+                <td class="yellow-text">sudo</td>
                 <td>Введите "sudo" для ██████ ███ ██████.</td>
             </tr>
             <tr>
@@ -181,7 +164,7 @@ const layoutLib = {
   getBannerResponse: function (date) {
     const responseItem = getResponseItem("banner", date);
     responseItem.querySelector(".response-body").innerHTML = `
-    <p class="yellow-text">#===========================================#
+    <p class="yellow-text banner">#===========================================#
 #     ______                                #
 #    / ____/_  ______ ____  ____  ___       #
 #   / __/ / / / / __ \\/ _ \\/ __ \\/ _ \\      #

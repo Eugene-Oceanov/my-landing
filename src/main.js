@@ -1,12 +1,16 @@
 import "./style.scss";
 import layoutLib from "./components/layouts-library.js";
 import logicLib from "./components/library.js";
+import { stopPong } from "./components/pong.js";
+import { stopPlayer } from "./components/player.js";
+import { stopSnake } from "./components/snake.js";
 
 const app = document.querySelector("#app");
 const output = document.querySelector("#output");
 const input = document.querySelector(".input_field");
 const storage = new Array();
 const commands = {
+  aboutme: layoutLib.getAboutmeResponse,
   skills: layoutLib.getSkillsResponse,
   banner: layoutLib.getBannerResponse,
   help: layoutLib.getHelpResponse,
@@ -29,6 +33,9 @@ input.addEventListener("keydown", (e) => {
     const date = logicLib.getDate();
     let responseItem;
     if (validCommand === "clear") {
+      stopSnake();
+      stopPong();
+      stopPlayer();
       commands.clear(output, storage);
       input.textContent = "";
       commandCounter = 0;
@@ -67,10 +74,14 @@ input.addEventListener("keydown", (e) => {
   }
   if (e.key === "ArrowDown") {
     e.preventDefault();
-    if (commandCounter >= storage.length - 1) return;
-    commandCounter++;
-    input.textContent = storage[commandCounter].command;
-    logicLib.cursorToTheEnd();
+    if (commandCounter < storage.length) {
+      commandCounter++;
+      input.textContent =
+        commandCounter === storage.length
+          ? ""
+          : storage[commandCounter].command;
+      logicLib.cursorToTheEnd();
+    }
   }
 });
 
@@ -95,7 +106,7 @@ window.addEventListener("load", () => {
       responseItem.scrollIntoView({ behavior: "auto", block: "end" });
       storage.push(item);
     });
-    commandCounter = storage.length - 1;
+    commandCounter = storage.length;
     input.textContent = "";
   }
   logicLib.cursorToTheEnd();

@@ -39,21 +39,21 @@ const musicBase = [
 
 export async function playerInit(response) {
   response.onload = () => {};
-  audio = response.querySelector("#audio");
-  songInfo = response.querySelector(".song-info");
-  progressBarOuter = response.querySelector(".progress-bar-outer");
-  progressBarInner = response.querySelector(".progress-bar-inner");
-  timer = response.querySelector(".song-timer");
-  fullDuration = response.querySelector(".song-duration");
+  const audio = response.querySelector("#audio");
+  const songInfo = response.querySelector(".song-info");
+  const progressBarOuter = response.querySelector(".progress-bar-outer");
+  const progressBarInner = response.querySelector(".progress-bar-inner");
+  const timer = response.querySelector(".song-timer");
+  const fullDuration = response.querySelector(".song-duration");
   const bottomBlock = response.querySelector(".player-bottom-block");
   const controlsBlock = response.querySelector(".player-controls");
-  playBtn = response.querySelector(".player-play-btn");
-  pauseBtn = response.querySelector(".player-pause-btn");
-  prevBtn = response.querySelector(".player-prev-btn");
-  nextBtn = response.querySelector(".player-next-btn");
-  canvas = response.querySelector("#player-canvas");
-  ctx = canvas.getContext("2d");
-  currentSong = musicBase[0];
+  const playBtn = response.querySelector(".player-play-btn");
+  const pauseBtn = response.querySelector(".player-pause-btn");
+  const prevBtn = response.querySelector(".player-prev-btn");
+  const nextBtn = response.querySelector(".player-next-btn");
+  const canvas = response.querySelector("#player-canvas");
+  const ctx = canvas.getContext("2d");
+  let currentSong = musicBase[0];
   audio.crossOrigin = "anonymous";
   audio.src = currentSong.file;
   songInfo.innerHTML = getSongInfo();
@@ -78,15 +78,19 @@ async function playMusic() {
   if (audioCtx && audioCtx.state === "suspended") {
     await audioCtx.resume();
   }
-  audio.play();
-  isPause = false;
-  playBtn.style.display = "none";
-  pauseBtn.style.display = "inline-block";
-  audio.ontimeupdate = (e) => {
-    getProgress(e);
-    timer.textContent = songTimeToString(audio.currentTime);
-  };
-  if (!animationID) drawEqualizer();
+  try {
+    await audio.play();
+    isPause = false;
+    playBtn.style.display = "none";
+    pauseBtn.style.display = "inline-block";
+    audio.ontimeupdate = (e) => {
+      getProgress(e);
+      timer.textContent = songTimeToString(audio.currentTime);
+    };
+    if (!animationID) drawEqualizer();
+  } catch {
+    console.error("Воспроизведение аудио завершилось ошибкой.");
+  }
 }
 
 function pauseMusic() {
@@ -177,5 +181,14 @@ function drawEqualizer() {
     ctx.fillStyle = barColor;
     ctx.fillRect(x, canvas.height - barHeight / 9, barWidth, barHeight / 9);
     x += barWidth + 1;
+  }
+}
+
+export function stopPlayer() {
+  if (document.querySelector(".player")) {
+    audio.stop();
+    isPause = true;
+    cancelAnimationFrame(animationID);
+    animationID = null;
   }
 }

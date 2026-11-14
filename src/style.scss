@@ -45,7 +45,7 @@
     font-weight: normal;
     line-height: normal;
     color: #fff;
-    white-space: pre;
+    white-space: normal;
   }
 
   .yellow-text {
@@ -67,6 +67,10 @@
       .response-body {
         position: relative;
         margin-left: 25px;
+
+        .banner {
+          white-space: pre;
+        }
 
         table tr td + td {
           padding-left: 30px;

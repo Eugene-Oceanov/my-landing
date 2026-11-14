@@ -60,11 +60,11 @@ function startPong() {
 }
 
 function frame(timestamp) {
-  if (!document.querySelector("#pong-canvas")) {
-    isGameOver = true;
-    canvas.removeEventListener("keydown", addKeydownListener);
-    cancelAnimationFrame(animationID);
-  }
+  // if (!document.querySelector("#pong-canvas")) {
+  //   isGameOver = true;
+  //   canvas.removeEventListener("keydown", addKeydownListener);
+  //   cancelAnimationFrame(animationID);
+  // }
   if (isGameOver) return;
   if (!lastTime) {
     lastTime = timestamp;
@@ -81,10 +81,19 @@ function frame(timestamp) {
 }
 
 function draw() {
+  let backgroundColor;
+  let elementsColor;
+  if (document.getElementById("app").classList.contains("light")) {
+    backgroundColor = "#f1f1f1";
+    elementsColor = "#000000";
+  } else {
+    backgroundColor = "#000000";
+    elementsColor = "#ffffff";
+  }
   ctx.beginPath();
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = elementsColor;
   ctx.fillRect(0, AIpos, paddleW, paddleH);
   ctx.fillRect(canvasWidth - paddleW, playerPos, paddleW, paddleH);
   ctx.arc(ballX, ballY, ballR, 0, Math.PI * 2);
@@ -186,4 +195,12 @@ function calcBounceAngle(pos, direction) {
   const speed = Math.hypot(dirX, dirY);
   dirX = direction * Math.cos(angle) * speed;
   dirY = Math.sin(angle) * speed;
+}
+
+export function stopPong() {
+  if (document.querySelector("#pong-canvas")) {
+    isGameOver = true;
+    canvas.removeEventListener("keydown", addKeydownListener);
+    cancelAnimationFrame(animationID);
+  }
 }
