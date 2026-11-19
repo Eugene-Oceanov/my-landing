@@ -2,6 +2,11 @@ import logicLib from "./library.js";
 
 let canvas;
 let ctx;
+let snakeControls;
+let upBtn;
+let rightBtn;
+let downBtn;
+let leftBtn;
 let countNode;
 let tile = 25;
 let grid;
@@ -24,23 +29,44 @@ let bestResult = localStorage.getItem("snakeBest")
 
 export function snakeInit(response) {
   canvas = response.querySelector("#snake-canvas");
+  if (window.innerWidth > 650) {
+    canvas.width = 500;
+    canvas.height = 500;
+  } else {
+    canvas.width = window.innerWidth - 25 - (window.innerWidth % tile);
+    canvas.height = canvas.width;
+  }
   ctx = canvas.getContext("2d");
+  snakeControls = response.querySelector(".snake-controls");
   grid = canvas.width / tile;
   countNode = response.querySelector(".snake-score");
+  upBtn = response.querySelector(".snake-up-btn");
+  rightBtn = response.querySelector(".snake-right-btn");
+  downBtn = response.querySelector(".snake-down-btn");
+  leftBtn = response.querySelector(".snake-left-btn");
   snake.length = 0;
   snake.push({
     x: logicLib.getRandomInt(0, grid - 1),
     y: logicLib.getRandomInt(0, grid - 1),
   });
   direction = directions.right;
+  directionQueue.length = 0;
   apple = getApple();
   score = 0;
   isRunning = true;
   delay = 500;
   draw();
   setTimeout(() => frame(), delay);
-  setTimeout(() => canvas.focus(), 0);
-  canvas.addEventListener("keydown", addKeydownListener);
+  setTimeout(() => {
+    canvas.focus();
+    snakeControls.style.width = `${canvas.width}px`;
+    snakeControls.style.height = `${canvas.width}px`;
+  }, 0);
+  if (window.innerWidth > 650) {
+    canvas.addEventListener("keydown", addKeydownListener);
+  } else {
+    addMobileControlListeners();
+  }
 }
 
 function frame() {
@@ -155,6 +181,35 @@ function addKeydownListener(e) {
   if (last.x + newDir.x === 0 && last.y + newDir.y === 0) return;
   if (last.x === newDir.x && last.y === newDir.y) return;
   directionQueue.push(newDir);
+}
+
+function addMobileControlListeners() {
+  const handleDirection = (newDir) => {
+    const last = directionQueue.length
+      ? directionQueue[directionQueue.length - 1]
+      : direction;
+
+    if (last.x + newDir.x === 0 && last.y + newDir.y === 0) return;
+    if (last.x === newDir.x && last.y === newDir.y) return;
+    directionQueue.push(newDir);
+  };
+
+  upBtn.onpointerdown = (e) => {
+    e.preventDefault();
+    handleDirection(directions.up);
+  };
+  rightBtn.onpointerdown = (e) => {
+    e.preventDefault();
+    handleDirection(directions.right);
+  };
+  downBtn.onpointerdown = (e) => {
+    e.preventDefault();
+    handleDirection(directions.down);
+  };
+  leftBtn.onpointerdown = (e) => {
+    e.preventDefault();
+    handleDirection(directions.left);
+  };
 }
 
 export function stopSnake() {

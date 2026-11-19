@@ -52,6 +52,12 @@
     color: yellow;
   }
 
+  .control-btn {
+    height: 20%;
+    aspect-ratio: 1;
+    display: none;
+  }
+
   #output {
     padding: 15px;
     flex-grow: 1;
@@ -71,20 +77,73 @@
         .banner {
           white-space: pre;
         }
+      }
 
-        table tr td + td {
-          padding-left: 30px;
+      table tr td + td {
+        padding-left: 30px;
+      }
+
+      canvas {
+        border: 3px dashed #fff;
+        outline: none;
+      }
+
+      .snake-controls {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: space-around;
+
+        .snake-controls-block {
+          width: 100%;
         }
 
-        canvas {
-          border: 3px dashed #fff;
-          outline: none;
+        .snake-controls-updown-block {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .snake-controls-leftright-block {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+        }
+
+        .snake-control {
+          height: 70%;
+        }
+
+        .snake-up-btn {
+          transform: rotate(-90deg);
+        }
+
+        .snake-left-btn {
+          transform: rotate(180deg);
+        }
+
+        .snake-down-btn {
+          transform: rotate(90deg);
+        }
+      }
+
+      .pong-panel {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+
+        .pong-up-btn {
+          transform: rotate(-90deg);
         }
 
         .pong-info {
-          position: absolute;
-          left: 0;
-          top: 0;
+          width: 100%;
           display: flex;
           justify-content: space-around;
           align-items: center;
@@ -101,73 +160,76 @@
             cursor: pointer;
           }
         }
+        .pong-down-btn {
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    .player {
+      padding: 10px;
+      border: 3px dashed #fff;
+      width: 50%;
+
+      .song-info {
+        margin-bottom: 5px;
       }
 
-      .player {
-        padding: 10px;
-        border: 3px dashed #fff;
-        width: 35%;
+      .progress-bar-outer {
+        width: 100%;
+        margin-bottom: 5px;
+        padding: 2px;
+        border: 2px dashed #fff;
+        cursor: pointer;
 
-        .song-info {
-          margin-bottom: 5px;
+        .progress-bar-inner {
+          height: 3px;
+          width: 0;
+          background: #fff;
         }
+      }
 
-        .progress-bar-outer {
-          width: 100%;
-          margin-bottom: 5px;
-          padding: 2px;
-          border: 2px dashed #fff;
+      .player-time-info {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      .player-bottom-block {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        .player-control-btn {
+          width: 32px;
+          aspect-ratio: 1;
           cursor: pointer;
-
-          .progress-bar-inner {
-            height: 3px;
-            width: 0;
-            background: #fff;
+          + .player-control-btn {
+            margin-left: 10px;
           }
         }
-
-        .player-time-info {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 5px;
-        }
-
-        .player-bottom-block {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          gap: 10px;
-
-          .player-control-btn {
-            width: 32px;
-            aspect-ratio: 1;
-            cursor: pointer;
-            + .player-control-btn {
-              margin-left: 10px;
-            }
-          }
-          .player-prev-btn {
-            transform: rotate(180deg);
-          }
+        .player-prev-btn {
+          transform: rotate(180deg);
         }
       }
     }
   }
+}
 
-  #input {
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    background: #141414;
+#input {
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  background: #141414;
 
-    .input_field {
-      flex-grow: 1;
-      caret-color: #fff;
-      caret-shape: block;
-      outline: none;
-      white-space: nowrap;
-    }
+  .input_field {
+    flex-grow: 1;
+    caret-color: #fff;
+    caret-shape: block;
+    outline: none;
+    white-space: nowrap;
   }
 }
 
@@ -209,6 +271,90 @@
 
     .input_field {
       caret-color: #000 !important;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  #app {
+    #output {
+      .response-item {
+        .player {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 650px) {
+  #app {
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    a,
+    tr,
+    td {
+      font-size: 12px;
+    }
+
+    .control-btn {
+      display: block;
+    }
+    #output {
+      padding: 10px;
+
+      .response-item {
+        margin-bottom: 10px;
+
+        .response-body {
+          margin-left: 0;
+
+          .snake-controls {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  #app {
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    a,
+    tr,
+    td {
+      font-size: 10px;
+    }
+
+    #output {
+      padding: 10px;
+
+      .response-item {
+        margin-bottom: 10px;
+
+        .response-body {
+          margin-left: 0;
+        }
+
+        .player {
+          .player-bottom-block {
+            flex-direction: column;
+
+            .player-controls {
+              display: flex;
+              justify-content: space-around;
+            }
+          }
+        }
+      }
     }
   }
 }

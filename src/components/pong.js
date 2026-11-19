@@ -1,4 +1,6 @@
-let pongInfo;
+let pongPanel;
+let upBtn;
+let downBtn;
 let AIscoreNode;
 let playerScoreNode;
 let restartBtn;
@@ -10,8 +12,8 @@ let playerPos;
 let AIpos;
 let ballX;
 let ballY;
-const paddleW = 10;
-const paddleH = 50;
+let paddleW;
+let paddleH;
 const ballR = 5;
 let dirX = 120;
 let dirY = 120;
@@ -21,10 +23,26 @@ let animationID;
 let playerScore = 0;
 let AIscore = 0;
 let lastTime;
+let upBtnIsDown = false;
+let downBtnIsDown = false;
 
 export function pongInit(response) {
-  pongInfo = response.querySelector(".pong-info");
+  pongPanel = response.querySelector(".pong-panel");
   canvas = response.querySelector("#pong-canvas");
+  const aspectRatio = 3 / 5;
+  if (window.innerWidth > 650) {
+    canvas.width = 500;
+    canvas.height = canvas.width * aspectRatio;
+    paddleW = 10;
+    paddleH = 50;
+  } else {
+    canvas.width = window.innerWidth - 30;
+    canvas.height = canvas.width * aspectRatio;
+    paddleW = 7;
+    paddleH = canvas.height / 6;
+    upBtn = response.querySelector(".pong-up-btn");
+    downBtn = response.querySelector(".pong-down-btn");
+  }
   ctx = canvas.getContext("2d");
   AIscoreNode = response.querySelector(".pong-ai-counter");
   playerScoreNode = response.querySelector(".pong-player-counter");
@@ -33,8 +51,8 @@ export function pongInit(response) {
   setTimeout(() => {
     canvasWidth = canvas.width = canvas.clientWidth;
     canvasHeight = canvas.height = canvas.clientHeight;
-    pongInfo.style.width = `${canvasWidth}px`;
-    pongInfo.style.height = `${canvasHeight}px`;
+    pongPanel.style.width = `${canvasWidth}px`;
+    pongPanel.style.height = `${canvasHeight}px`;
     restartBtn.addEventListener("click", startPong);
     startPong();
   }, 0);
@@ -56,15 +74,14 @@ function startPong() {
   lastTime = 0;
   animationID = requestAnimationFrame(frame);
   canvas.focus();
-  canvas.addEventListener("keydown", addKeydownListener);
+  if (window.innerWidth > 650) {
+    canvas.addEventListener("keydown", addKeydownListener);
+  } else {
+    addMobileControlListeners();
+  }
 }
 
 function frame(timestamp) {
-  // if (!document.querySelector("#pong-canvas")) {
-  //   isGameOver = true;
-  //   canvas.removeEventListener("keydown", addKeydownListener);
-  //   cancelAnimationFrame(animationID);
-  // }
   if (isGameOver) return;
   if (!lastTime) {
     lastTime = timestamp;
@@ -77,6 +94,7 @@ function frame(timestamp) {
   moveAI(deltaTime);
   checkCollision();
   draw();
+  mobileControlHandler();
   animationID = requestAnimationFrame(frame);
 }
 
@@ -91,7 +109,7 @@ function draw() {
     elementsColor = "#ffffff";
   }
   ctx.beginPath();
-  ctx.fillStyle = backgroundColor;
+  ctx.fillStyle = "rgba(0, 0, 0, 1)";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   ctx.fillStyle = elementsColor;
   ctx.fillRect(0, AIpos, paddleW, paddleH);
@@ -166,12 +184,16 @@ function gameOver() {
     playerScoreNode.textContent = playerScore;
     restartBtn.style.display = "block";
     canvas.removeEventListener("keydown", addKeydownListener);
+    upBtnIsDown = false;
+    downBtnIsDown = false;
   } else if (ballX >= canvasWidth) {
     isGameOver = true;
     AIscore += 1;
     AIscoreNode.textContent = AIscore;
     restartBtn.style.display = "block";
     canvas.removeEventListener("keydown", addKeydownListener);
+    upBtnIsDown = false;
+    downBtnIsDown = false;
   }
 }
 
@@ -184,6 +206,35 @@ function addKeydownListener(e) {
     if (playerPos >= canvasHeight - paddleH) return;
     e.preventDefault();
     playerPos += 10;
+  }
+}
+
+function addMobileControlListeners() {
+  upBtn.onpointerdown = () => (upBtnIsDown = true);
+  upBtn.onpointerup = () => (upBtnIsDown = false);
+  upBtn.onpointerleave = () => (upBtnIsDown = false);
+  upBtn.onpointerup = () => (upBtnIsDown = false);
+  upBtn.oncontextmenu = (e) => e.preventDefault();
+  downBtn.onpointerdown = () => (downBtnIsDown = true);
+  downBtn.onpointerup = () => (downBtnIsDown = false);
+  downBtn.onpointerleave = () => (downBtnIsDown = false);
+  downBtn.oncontextmenu = (e) => e.preventDefault();
+}
+
+function mobileControlHandler() {
+  if (upBtnIsDown && !isGameOver) {
+    if (playerPos <= 0) {
+      upBtnIsDown = false;
+      return;
+    }
+    playerPos -= 2;
+  }
+  if (downBtnIsDown && !isGameOver) {
+    if (playerPos >= canvasHeight - paddleH) {
+      downBtnIsDown = false;
+      return;
+    }
+    playerPos += 2;
   }
 }
 

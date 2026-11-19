@@ -45,8 +45,8 @@ export async function playerInit(response) {
   progressBarInner = response.querySelector(".progress-bar-inner");
   timer = response.querySelector(".song-timer");
   fullDuration = response.querySelector(".song-duration");
-  bottomBlock = response.querySelector(".player-bottom-block");
-  controlsBlock = response.querySelector(".player-controls");
+  const bottomBlock = response.querySelector(".player-bottom-block");
+  const controlsBlock = response.querySelector(".player-controls");
   playBtn = response.querySelector(".player-play-btn");
   pauseBtn = response.querySelector(".player-pause-btn");
   prevBtn = response.querySelector(".player-prev-btn");
@@ -69,7 +69,11 @@ export async function playerInit(response) {
   nextBtn.onclick = () => nextMusic();
   canvas.height = 32;
   setTimeout(() => {
-    canvas.width = bottomBlock.offsetWidth - controlsBlock.offsetWidth - 30;
+    if (window.innerWidth > 500) {
+      canvas.width = bottomBlock.offsetWidth - controlsBlock.offsetWidth - 40;
+    } else {
+      canvas.width = bottomBlock.offsetWidth;
+    }
   }, 0);
   equalizerInit();
 }
@@ -186,7 +190,7 @@ function drawEqualizer() {
 
 export function stopPlayer() {
   if (document.querySelector(".player")) {
-    audio.stop();
+    audio.pause();
     isPause = true;
     cancelAnimationFrame(animationID);
     animationID = null;

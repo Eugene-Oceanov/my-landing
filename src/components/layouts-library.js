@@ -1,7 +1,8 @@
-const pathString = "guest-user@my-site.com:~$";
+const pathString = "guest-user@oceanov.code.ru:~$";
 import { snakeInit } from "./snake.js";
 import { pongInit } from "./pong.js";
 import { playerInit } from "./player.js";
+import arrowBtn from "../assets/img/arrow-btn.png";
 import restartBtn from "../assets/img/restart-btn.png";
 import playerPlayBtn from "../assets/img/play-btn.png";
 import playerPauseBtn from "../assets/img/pause-btn.png";
@@ -177,7 +178,7 @@ const layoutLib = {
 #                                           #
 #===========================================#</p>
     <p># Фронтенд разработчик</p>
-    <p>my-site.com Все права защищены (c)</p>
+    <p>oceanov.code.ru Все права защищены (c)</p>
     <p>Введите "<span class="yellow-text">help</span>" что бы увидеть доступные команды.</p>
   `;
     return responseItem;
@@ -233,7 +234,21 @@ const layoutLib = {
       : 0;
     responseItem.querySelector(".response-body").innerHTML = `
       <p class="snake-score">Счет: 0. Лучший результат: ${bestResult}.</p>
-      <canvas id="snake-canvas" width="500" height="500" tabindex="0"></canvas>`;
+      <div class="snake-container">
+        <div class="snake-controls">
+          <div class="snake-controls-block snake-controls-updown-block">
+            <img src="${arrowBtn}" alt="up" class="control-btn snake-control snake-up-btn">
+          </div>
+          <div class="snake-controls-block snake-controls-leftright-block">
+            <img src="${arrowBtn}" alt="left" class="control-btn snake-control snake-left-btn">
+            <img src="${arrowBtn}" alt="left" class="control-btn snake-control snake-right-btn">
+          </div>
+          <div class="snake-controls-block snake-controls-updown-block">
+            <img src="${arrowBtn}" alt="up" class="control-btn snake-control snake-down-btn">
+          </div>
+        </div>
+        <canvas id="snake-canvas" tabindex="0"></canvas>
+      </div>`;
     snakeInit(responseItem);
     return responseItem;
   },
@@ -246,12 +261,17 @@ const layoutLib = {
       return responseItem;
     }
     responseItem.querySelector(".response-body").innerHTML = `
-    <canvas id="pong-canvas" width="500" height="300" tabindex="0"></canvas>
-    <div class="pong-info">
-      <p class="pong-counter pong-ai-counter">0</p>
-      <img src="${restartBtn}" alt="restart" class="restart-btn pong-restart-btn">
-      <p class="pong-counter pong-player-counter">0</p>
-    </div>`;
+    <canvas id="pong-canvas" tabindex="0"></canvas>
+    <div class="pong-panel">
+      <img src="${arrowBtn}" alt="up" class="control-btn pong-control-btn pong-up-btn">
+      <div class="pong-info">
+        <p class="pong-counter pong-ai-counter">0</p>
+        <img src="${restartBtn}" alt="restart" class="restart-btn pong-restart-btn">
+        <p class="pong-counter pong-player-counter">0</p>
+      </div>
+      <img src="${arrowBtn}" alt="down" class="control-btn pong-control-btn pong-down-btn"
+      </div>`;
+
     pongInit(responseItem);
     return responseItem;
   },
